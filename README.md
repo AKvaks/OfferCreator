@@ -13,7 +13,7 @@ There are seed methods in Program.cs that can be used to populate database with 
 
 To create a new migration, update database or remove migration use one of the following console commands:
 
-### Creating migration
+### Create migration
 
 > [!NOTE]
 > Position yourself in the solution folder
@@ -31,7 +31,7 @@ Add-Migration MIGRATION_NAME -Project OfferCreator.Persistance -StartupProject O
 Update-Database -Project OfferCreator.Persistance -StartupProject OfferCreator.API
 ```
 
-## Removing last migration
+### Remove last migration
 
 > [!CAUTION]
 > This should be done ONLY IF migration was not applied to the Db
