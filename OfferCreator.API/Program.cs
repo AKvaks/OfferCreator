@@ -46,9 +46,9 @@ using (var scope = app.Services.CreateScope())
             dbContext.Database.SetCommandTimeout(300);
             dbContext.Database.Migrate();
 
-            await SeedItems(dbContext).ConfigureAwait(false);
-            await SeedOffers(dbContext).ConfigureAwait(false);
-            await SeedOfferItems(dbContext).ConfigureAwait(false);
+            //await SeedItems(dbContext).ConfigureAwait(false);
+            //await SeedOffers(dbContext).ConfigureAwait(false);
+            //await SeedOfferItems(dbContext).ConfigureAwait(false);
         }
     }
     catch (Exception ex)
