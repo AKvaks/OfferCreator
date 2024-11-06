@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\OfferCreator.Core\OfferCreator.Core.csproj" />
+    <ProjectReference Include="..\OfferCreator.Persistance\OfferCreator.Persistance.csproj" />
     <ProjectReference Include="..\OfferCreator.Presentation\OfferCreator.Presentation.csproj" />
   </ItemGroup>
 

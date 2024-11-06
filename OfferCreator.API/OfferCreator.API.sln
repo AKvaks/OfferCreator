@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfferCreator.Core", "..\Off
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfferCreator.Presentation", "..\OfferCreator.Presentation\OfferCreator.Presentation.csproj", "{3D8B25A6-8B05-42DD-87C6-9C9C276BA381}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfferCreator.Persistance", "..\OfferCreator.Persistance\OfferCreator.Persistance.csproj", "{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{3D8B25A6-8B05-42DD-87C6-9C9C276BA381}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D8B25A6-8B05-42DD-87C6-9C9C276BA381}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D8B25A6-8B05-42DD-87C6-9C9C276BA381}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

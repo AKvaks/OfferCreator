@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using OfferCreator.Persistance;
+using OfferCreator.Persistance.Configuration;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,6 +11,8 @@ builder.Services.AddRazorPages();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddPersistanceServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -29,4 +35,23 @@ app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
 
+using (var scope = app.Services.CreateScope())
+{
+    try
+    {
+        var dbContext = scope.ServiceProvider.GetService<ApplicationDbContext>();
+        if (dbContext != null)
+        {
+            dbContext.Database.SetCommandTimeout(300);
+            dbContext.Database.Migrate();
+        }
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(ex);
+        throw;
+    }
+}
+
 app.Run();
+
