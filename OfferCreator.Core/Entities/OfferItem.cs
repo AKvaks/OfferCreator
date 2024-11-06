@@ -16,8 +16,6 @@ namespace OfferCreator.Core.Entities
         [Range(0.1, double.MaxValue, ErrorMessage = "Quantity must be greater than 0")]
         public decimal Quantity { get; set; }
 
-        public decimal TotalPrice => PricePerItem * Quantity;
-
         [Required]
         [ForeignKey(nameof(Offer))]
         public required int OfferId { get; set; }

@@ -33,7 +33,6 @@ namespace OfferCreator.Persistance
                 entity.HasKey(h => h.Id);
                 entity.Property(h => h.PricePerItem).HasColumnType("decimal(18,2)").IsRequired();
                 entity.Property(h => h.Quantity).HasColumnType("decimal(18,2)").IsRequired();
-                entity.Property(h => h.TotalPrice).HasColumnType("decimal(18,2)").IsRequired();
             });
 
             modelBuilder.Entity<OfferItem>()
@@ -46,7 +45,7 @@ namespace OfferCreator.Persistance
                 .HasOne(h => h.Item)
                 .WithMany(h => h.OfferItems)
                 .HasForeignKey(h => h.ItemId)
-                .OnDelete(DeleteBehavior.SetNull);
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
