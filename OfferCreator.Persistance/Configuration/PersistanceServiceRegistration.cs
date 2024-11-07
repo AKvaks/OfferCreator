@@ -16,6 +16,7 @@ namespace OfferCreator.Persistance.Configuration
                 options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
 
             services.AddScoped<IOfferRepository, OfferRepository>();
+            services.AddScoped<IArticleRepository, ArticleRepository>();
 
             return services;
         }

@@ -7,5 +7,10 @@ namespace OfferCreator.Core.Interfaces
     {
         Task<IEnumerable<OfferListModel>> GetAllOffers();
         Task<PagedResponse<OfferListModel>> GetAllOffersPaginated(int pageNumber, int pageSize);
+        Task<OfferModel> GetOfferDetailsById(int id);
+        Task<OfferAddEditModel> GetOfferForEditById(int id);
+        Task<int> AddOffer(OfferAddEditModel offerToAdd);
+        Task<int> UpdatOffer(OfferAddEditModel offerToUpdate);
+        Task<int> DeleteOffer(int offerId);
     }
 }

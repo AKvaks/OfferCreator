@@ -1,14 +1,120 @@
 ﻿@page "/articles"
+@using System.Net.Http
+@using System.Text
+@using System.Text.Json
 @using OfferCreator.Core.Models
-@using OfferCreator.Core.Models.DTOs.Offers
+@using OfferCreator.Core.Models.DTOs.Articles
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <PageTitle>Articles</PageTitle>
 
-<h1>Articles</h1>
+<div class="page-title">
+    <h1>Articles</h1>
+    <button class="btn btn-primary" type="button" @onclick="AddArticle">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>
+        Add Article
+    </button>
+</div>
 <br />
-
+@if (pagedArticles is null)
+{
+    <p class="loading-progress-text">Loading...</p>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Article name</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var article in pagedArticles.Items)
+                {
+                    <tr>
+                        <td @onclick="() => OnItemClick(article.Id)">@article.ArticleName</td>
+                        <td>
+                            <button class="btn btn-danger" type="button" @onclick="() => DeleteArticle(article.Id)">
+                                <i class="fa-solid fa-trash" />
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="table-buttons">
+        <button class="btn btn-primary" type="button" @onclick="PreviousAsync" disabled="@(!pagedArticles.HasPreviousPage)">Previous</button>
+        <span>@pagedArticles.PageNumber / @pagedArticles.TotalPages</span>
+        <button class="btn btn-primary" type="button" @onclick="NextAsync" disabled="@(!pagedArticles.HasNextPage)">Next</button>
+    </div>
+}
 
 @code {
+    private PagedResponse<ArticleModel>? pagedArticles;
 
+    private int pageNumber = 1;
+    private const int pageSize = 3;
+
+    protected override async Task OnInitializedAsync()
+    {
+        pagedArticles = await Http.GetFromJsonAsync<PagedResponse<ArticleModel>>(GetAllItemsPagedURL(pageNumber));
+    }
+
+    private async Task PreviousAsync()
+    {
+        if (pageNumber - 1 > 0)
+        {
+            pageNumber--;
+            await OnPageNumberChange();
+        }
+    }
+
+    private async Task NextAsync()
+    {
+        if (pageNumber + 1 <= pagedArticles?.TotalPages)
+        {
+            pageNumber++;
+            await OnPageNumberChange();
+        }
+    }
+
+    private async Task OnPageNumberChange()
+    {
+        pagedArticles = await Http.GetFromJsonAsync<PagedResponse<ArticleModel>>(GetAllItemsPagedURL(pageNumber));
+        StateHasChanged();
+    }
+
+    private string GetAllItemsPagedURL(int pageNumber)
+    {
+        return "api/article?pageNumber=" + $"{pageNumber}" + $"&pageSize={pageSize}";
+    }
+
+    private void OnItemClick(int articleId)
+    {
+        NavigationManager.NavigateTo($"/articles/add-edit/{articleId}");
+    }
+
+    private void AddArticle()
+    {
+        NavigationManager.NavigateTo("/articles/add-edit");
+    }
+
+    private async void DeleteArticle(int articleId)
+    {
+        HttpResponseMessage response = await Http.DeleteAsync($"/api/article/{articleId}");
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Delete successful");
+            pagedArticles = await Http.GetFromJsonAsync<PagedResponse<ArticleModel>>(GetAllItemsPagedURL(pageNumber));
+            StateHasChanged();
+        }
+        else
+        {
+            Console.WriteLine($"Delete failed with status code {response.StatusCode}");
+        }
+    }
 }

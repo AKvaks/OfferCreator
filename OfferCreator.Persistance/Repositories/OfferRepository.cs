@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OfferCreator.Core.Entities;
 using OfferCreator.Core.Interfaces;
 using OfferCreator.Core.Models;
+using OfferCreator.Core.Models.DTOs.OfferItems;
 using OfferCreator.Core.Models.DTOs.Offers;
 
 namespace OfferCreator.Persistance.Repositories
@@ -44,6 +46,143 @@ namespace OfferCreator.Persistance.Repositories
                 })
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<OfferModel> GetOfferDetailsById(int id)
+        {
+            var offer = await _context.Offers
+                .Include(x => x.OfferItems)
+                .ThenInclude(x => x.Item)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            List<OfferItemModel> offerItemsResult = new List<OfferItemModel>();
+            foreach (var offerItem in offer.OfferItems)
+            {
+                OfferItemModel item = new OfferItemModel
+                {
+                    Id = offerItem.Id,
+                    ArticleId = offerItem.ItemId,
+                    ArticleName = offerItem.Item.ItemName,
+                    OfferId = offer.Id,
+                    PricePerItem = offerItem.PricePerItem,
+                    Quantity = offerItem.Quantity
+                };
+                offerItemsResult.Add(item);
+            }
+
+            return new OfferModel
+            {
+                Id = offer.Id,
+                OfferNumber = offer.OfferNumber,
+                DateOfOffer = offer.UpdatedAt.ToShortDateString(),
+                OfferItems = offerItemsResult
+            };
+        }
+
+        public async Task<OfferAddEditModel> GetOfferForEditById(int id)
+        {
+            var offer = await _context.Offers
+                .Include(x => x.OfferItems)
+                .ThenInclude(x => x.Item)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.Id == id);
+
+            List<OfferItemModel> offerItemsResult = new List<OfferItemModel>();
+            foreach (var offerItem in offer.OfferItems)
+            {
+                OfferItemModel item = new OfferItemModel
+                {
+                    Id = offerItem.Id,
+                    ArticleId = offerItem.ItemId,
+                    ArticleName = offerItem.Item.ItemName,
+                    OfferId = offer.Id,
+                    PricePerItem = offerItem.PricePerItem,
+                    Quantity = offerItem.Quantity
+                };
+                offerItemsResult.Add(item);
+            }
+
+            return new OfferAddEditModel
+            {
+                Id = offer.Id,
+                OfferNumber = offer.OfferNumber,
+                DateOfOffer = offer.UpdatedAt.ToShortDateString(),
+                OfferItems = offerItemsResult,
+                OfferItemsIdsToDelete = new List<int>(),
+                OfferItemsIdsToUpdate = new List<int>()
+            };
+        }
+
+        public async Task<int> AddOffer(OfferAddEditModel offerToAdd)
+        {
+            var offerNumber = await _context.Offers.CountAsync();
+            Offer offer = new Offer()
+            {
+                OfferNumber = offerNumber + 1,
+            };
+            await _context.Offers.AddAsync(offer);
+
+            List<OfferItem> offerItemsToAdd = new List<OfferItem>();
+            foreach (var offerItem in offerToAdd.OfferItems)
+            {
+                OfferItem item = new OfferItem()
+                {
+                    OfferId = offer.Id,
+                    ItemId = offerItem.ArticleId,
+                    PricePerItem = offerItem.PricePerItem,
+                    Quantity = offerItem.Quantity
+                };
+                offerItemsToAdd.Add(item);
+            }
+
+            await _context.OfferItems.AddRangeAsync(offerItemsToAdd);
+            await _context.SaveChangesAsync();
+
+            return offer.Id;
+        }
+
+        public async Task<int> UpdatOffer(OfferAddEditModel offerToUpdate)
+        {
+            if (offerToUpdate.OfferItemsIdsToDelete.Any())
+            {
+                var offerItemsToDelete = await _context.OfferItems
+                .Where(x => offerToUpdate.OfferItemsIdsToDelete.Contains(x.Id))
+                .ToListAsync();
+
+                _context.RemoveRange(offerItemsToDelete);
+                await _context.SaveChangesAsync();
+            }
+
+            var offer = await _context.Offers
+                .Include(x => x.OfferItems)
+                .FirstOrDefaultAsync(x => x.Id == offerToUpdate.Id);
+
+            if (offer != null)
+            {
+                offer.UpdatedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+                return offer.Id;
+            }
+
+            return -1;
+        }
+
+        public async Task<int> DeleteOffer(int offerId)
+        {
+            var itemToDelete = await _context.Offers
+                .Include(x => x.OfferItems)
+                .FirstOrDefaultAsync(x => x.Id == offerId);
+
+            if (itemToDelete != null)
+            {
+                _context.Offers.Remove(itemToDelete);
+                await _context.SaveChangesAsync();
+                return itemToDelete.Id;
+            }
+
+            return -1;
         }
     }
 }

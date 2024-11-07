@@ -101,3 +101,19 @@ a, .btn-link {
 code {
     color: #c02d76;
 }
+
+.page-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-buttons {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 1em;
+    span {
+        margin: 0 2em;
+    }
+}

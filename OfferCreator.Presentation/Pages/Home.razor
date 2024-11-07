@@ -2,34 +2,55 @@
 @using OfferCreator.Core.Models
 @using OfferCreator.Core.Models.DTOs.Offers
 @inject HttpClient Http
+@inject NavigationManager NavigationManager
 
 <PageTitle>Offers</PageTitle>
 
-<h1>Offers</h1>
+<div class="page-title">
+    <h1>Offers</h1>
+    <button class="btn btn-primary" type="button" @onclick="AddOffer">
+        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>
+        Add Offer
+    </button>
+</div>
 <br />
 @if (pagedOffers is null)
 {
-    <p>Loading...</p>
+    <p class="loading-progress-text">Loading...</p>
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Offer number</th>
-                <th>Date of offer</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach(var offer in pagedOffers.Items)
-            {
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-dark">
                 <tr>
-                    <td>@offer.OfferNumber</td>
-                    <td>@offer.DateOfOffer</td>
+                    <th>Offer Number</th>
+                    <th>Date of Offer</th>
+                    <th></th>
+                    <th></th>
                 </tr>
-            }
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach (var offer in pagedOffers.Items)
+                {
+                    <tr>
+                        <td @onclick="() => OnOfferNumberClick(offer.Id)">@offer.OfferNumber</td>
+                        <td>@offer.DateOfOffer</td>
+                        <td>
+                            <button class="btn btn-success" type="button" @onclick="() => ShowOfferDetails(offer.Id)">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger" type="button" @onclick="() => DeleteOffer(offer.Id)">
+                                <i class="fa-solid fa-trash" />
+                            </button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
     <div class="table-buttons">
         <button class="btn btn-primary" type="button" @onclick="PreviousAsync" disabled="@(!pagedOffers.HasPreviousPage)">Previous</button>
         <span>@pagedOffers.PageNumber / @pagedOffers.TotalPages</span>
@@ -74,7 +95,28 @@ else
 
     private string GetAllOffersPagedURL(int pageNumber)
     {
-        return "api/offer?pageNumber=" + $"{pageNumber}" + $"&pageSize={pageSize}";
+        return "api/offer/GetAllOffersPaginated?pageNumber=" + $"{pageNumber}" + $"&pageSize={pageSize}";
+    }
+
+    private void ShowOfferDetails(int offerId)
+    {
+        NavigationManager.NavigateTo($"/offer-details/{offerId}");
+    }
+
+    private void DeleteOffer(int offerId)
+    {
+        Console.WriteLine(offerId);
+    }
+
+
+    private void OnOfferNumberClick(int offerId)
+    {
+        Console.WriteLine(offerId);
+    }
+
+    private void AddOffer()
+    {
+        Console.WriteLine("addOffer");
     }
 }
 

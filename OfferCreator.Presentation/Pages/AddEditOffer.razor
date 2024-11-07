@@ -1,0 +1,126 @@
+﻿@page "/add-edit-offer/{id:int?}"
+@using OfferCreator.Core.Models.DTOs.Offers
+@using OfferCreator.Core.Models.DTOs.OfferItems
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(Id != null ? "Edit Offer" : "Add Offer")</PageTitle>
+
+<div class="page-title">
+    <h1>@(Id != null ? "Edit Offer" : "Add Offer")</h1>
+    <button class="btn btn-primary" type="button" @onclick="BackToOffers">
+        Back
+    </button>
+</div>
+<br />
+<div>
+    <label>Offer No.: </label>
+    <span>@(offer.OfferNumber)</span>
+</div>
+<div>
+    <label>Date of offer: </label>
+    <span>@(offer.DateOfOffer)</span>
+</div>
+<hr />
+<h2>Offer Items:</h2>
+<div class="table-responsive">
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Article</th>
+                <th>Price per Item</th>
+                <th>Quantity</th>
+                <th>Total Price</th>
+                <th></th>
+                <th></th>
+                <button class="btn btn-success" type="button" @onclick="AddOfferItem">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var offerItem in offer.OfferItems)
+            {
+                <tr>
+                    <td>@offerItem.ArticleName</td>
+                    <td>@offerItem.PricePerItem</td>
+                    <td>@offerItem.Quantity</td>
+                    <td>@offerItem.TotalPrice</td>
+                    <td>
+                        <button class="btn btn-success" type="button" @onclick="() => EditOfferItem(offerItem.Id)">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </button>
+                    </td>
+                    <td>
+                        <button class="btn btn-danger" type="button" @onclick="() => DeleteOfferItem(offerItem)">
+                            <i class="fa-solid fa-trash" />
+                        </button>
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td></td>
+                <td></td>
+                <td>SUM:</td>
+                <td>@offer.OfferItems.Sum(x => x.TotalPrice)</td>
+                <td></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter]
+    public int? Id { get; set; }
+    string btnText = string.Empty;
+
+    public OfferAddEditModel offer = new OfferAddEditModel();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (Id != null)
+        {
+            // var response = await Http.GetFromJsonAsync<OfferAddEditModel>(GetArticleUrl() + $"/{Id}");
+            // if (response is not null)
+            // {
+            //     offer = response;
+            //     btnText = "Save changes";
+            // }
+            // else
+            // {
+            //     btnText = "Save";
+            // }
+        }
+        else
+        {
+            btnText = "Save";
+        }
+    }
+
+    private void AddOfferItem()
+    {
+
+    }
+
+    private void EditOfferItem(int OfferItemId)
+    {
+
+    }
+
+    private void DeleteOfferItem(OfferItemModel offerItemToDelete)
+    {
+        var removeAtIndex = offer.OfferItems?.IndexOf(offerItemToDelete);
+        if (removeAtIndex != null && removeAtIndex != -1)
+        {
+            offer.OfferItemsIdsToDelete?.Add(offerItemToDelete.Id);
+            offer.OfferItems?.RemoveAt(removeAtIndex.Value);
+            StateHasChanged();
+        }
+    }
+
+    private void BackToOffers()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

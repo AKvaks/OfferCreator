@@ -1,0 +1,90 @@
+﻿@page "/offer-details/{id:int}"
+@using OfferCreator.Core.Models.DTOs.Offers
+@inject HttpClient Http
+@inject NavigationManager NavigationManager
+
+<PageTitle>Offer Details</PageTitle>
+
+<div class="page-title">
+    <h1>Offer Details</h1>
+    <button class="btn btn-primary" type="button" @onclick="BackToOffers">
+        Back
+    </button>
+</div>
+<br />
+@if (offer is null)
+{
+    <p class="loading-progress-text">Loading...</p>
+}
+else
+{
+    <div>
+        <label>Offer No.: </label>
+        <span>@(offer.OfferNumber)</span>
+    </div>
+    <div>
+        <label>Date of offer: </label>
+        <span>@(offer.DateOfOffer)</span>
+    </div>
+    <hr />
+    <h2>Offer Items:</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Article</th>
+                    <th>Price per Item</th>
+                    <th>Quantity</th>
+                    <th>Total Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var offerItem in offer.OfferItems)
+                {
+                    <tr>
+                        <td>@offerItem.ArticleName</td>
+                        <td>@offerItem.PricePerItem</td>
+                        <td>@offerItem.Quantity</td>
+                        <td>@offerItem.TotalPrice</td>
+                    </tr>
+                }
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>SUM:</td>
+                    <td>@offer.OfferItems.Sum(x => x.TotalPrice)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    public OfferModel? offer;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var response = await Http.GetFromJsonAsync<OfferModel>(GetOfferDetailsByIdUrl());
+        if (response is not null)
+        {
+            offer = response;
+        }
+        else
+        {
+            //do smth
+        }
+    }
+
+    private string GetOfferDetailsByIdUrl()
+    {
+        return $"/api/offer/GetOfferDetailsById/{Id}";
+    }
+
+    private void BackToOffers()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+}

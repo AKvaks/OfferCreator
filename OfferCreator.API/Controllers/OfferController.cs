@@ -4,25 +4,32 @@ using OfferCreator.Core.Features.Offers.Queries;
 
 namespace OfferCreator.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class OfferController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<OfferController> _logger;
 
-        public OfferController(IMediator mediator, ILogger<WeatherForecastController> logger)
+        public OfferController(IMediator mediator, ILogger<OfferController> logger)
         {
             _mediator = mediator;
             _logger = logger;
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> GetAllOffers()
-        //{
-        //    var result = await _mediator.Send(new GetAllOffersQuery());
-        //    return Ok(result);
-        //}
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetOfferDetailsById(int Id)
+        {
+            var result = await _mediator.Send(new GetOfferByIdQuery(Id));
+            return Ok(result);
+        }
+
+        [HttpGet("{Id}")]
+        public async Task<IActionResult> GetOfferForEditById(int Id)
+        {
+            var result = await _mediator.Send(new GetOfferByIdQuery(Id));
+            return Ok(result);
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetAllOffersPaginated(int? pageNumber, int? pageSize)
