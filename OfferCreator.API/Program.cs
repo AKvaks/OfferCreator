@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OfferCreator.Core.Configuration;
 using OfferCreator.Core.Entities;
 using OfferCreator.Persistance;
 using OfferCreator.Persistance.Configuration;
@@ -14,6 +15,9 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistanceServices(builder.Configuration);
+builder.Services.AddCoreServices();
+
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(Program).Assembly));
 
 var app = builder.Build();
 

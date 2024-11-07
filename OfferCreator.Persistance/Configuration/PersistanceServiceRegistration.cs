@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OfferCreator.Core.Interfaces;
+using OfferCreator.Persistance.Repositories;
 
 namespace OfferCreator.Persistance.Configuration
 {
@@ -12,6 +14,8 @@ namespace OfferCreator.Persistance.Configuration
 
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString), ServiceLifetime.Scoped);
+
+            services.AddScoped<IOfferRepository, OfferRepository>();
 
             return services;
         }
