@@ -17,10 +17,17 @@ namespace OfferCreator.API.Controllers
             _logger = logger;
         }
 
+        //[HttpGet]
+        //public async Task<IActionResult> GetAllOffers()
+        //{
+        //    var result = await _mediator.Send(new GetAllOffersQuery());
+        //    return Ok(result);
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> GetAllOffers()
+        public async Task<IActionResult> GetAllOffersPaginated(int? pageNumber, int? pageSize)
         {
-            var result = await _mediator.Send(new GetAllOffersQuery());
+            var result = await _mediator.Send(new GetAllOffersPaginatedQuery(pageNumber, pageSize));
             return Ok(result);
         }
     }

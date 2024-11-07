@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfferCreator.API", "OfferCreator.API.csproj", "{570C3FE5-0D27-4CBB-917B-BC524662D62F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfferCreator.API", "OfferCreator.API.csproj", "{570C3FE5-0D27-4CBB-917B-BC524662D62F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfferCreator.Core", "..\OfferCreator.Core\OfferCreator.Core.csproj", "{498915DF-235A-4249-833E-1A589769A682}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfferCreator.Core", "..\OfferCreator.Core\OfferCreator.Core.csproj", "{498915DF-235A-4249-833E-1A589769A682}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfferCreator.Presentation", "..\OfferCreator.Presentation\OfferCreator.Presentation.csproj", "{3D8B25A6-8B05-42DD-87C6-9C9C276BA381}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfferCreator.Presentation", "..\OfferCreator.Presentation\OfferCreator.Presentation.csproj", "{3D8B25A6-8B05-42DD-87C6-9C9C276BA381}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfferCreator.Persistance", "..\OfferCreator.Persistance\OfferCreator.Persistance.csproj", "{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfferCreator.Persistance", "..\OfferCreator.Persistance\OfferCreator.Persistance.csproj", "{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
