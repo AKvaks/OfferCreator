@@ -9,8 +9,8 @@
 <div class="page-title">
     <h1>Offers</h1>
     <button class="btn btn-primary" type="button" @onclick="AddOffer">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>
-        Add Offer
+        <i class="fa-solid fa-plus"></i>
+        Offer
     </button>
 </div>
 <br />
@@ -27,7 +27,6 @@ else
                     <th>Offer Number</th>
                     <th>Date of Offer</th>
                     <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -40,8 +39,6 @@ else
                             <button class="btn btn-success" type="button" @onclick="() => ShowOfferDetails(offer.Id)">
                                 <i class="fa-solid fa-magnifying-glass"></i>
                             </button>
-                        </td>
-                        <td>
                             <button class="btn btn-danger" type="button" @onclick="() => DeleteOffer(offer.Id)">
                                 <i class="fa-solid fa-trash" />
                             </button>
@@ -103,20 +100,30 @@ else
         NavigationManager.NavigateTo($"/offer-details/{offerId}");
     }
 
-    private void DeleteOffer(int offerId)
+    private async Task DeleteOffer(int offerId)
     {
-        Console.WriteLine(offerId);
+        HttpResponseMessage response = await Http.DeleteAsync($"/api/offer/DeleteOfferById/{offerId}");
+        if (response.IsSuccessStatusCode)
+        {
+            Console.WriteLine("Delete successful");
+            pagedOffers = await Http.GetFromJsonAsync<PagedResponse<OfferListModel>>(GetAllOffersPagedURL(pageNumber));
+            StateHasChanged();
+        }
+        else
+        {
+            Console.WriteLine($"Delete failed with status code {response.StatusCode}");
+        }
     }
 
 
     private void OnOfferNumberClick(int offerId)
     {
-        Console.WriteLine(offerId);
+        NavigationManager.NavigateTo($"/add-edit-offer/{offerId}");
     }
 
     private void AddOffer()
     {
-        Console.WriteLine("addOffer");
+        NavigationManager.NavigateTo($"/add-edit-offer");
     }
 }
 

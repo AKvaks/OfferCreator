@@ -5,7 +5,7 @@ namespace OfferCreator.Core.Interfaces
 {
     public interface IArticleRepository
     {
-        Task<IEnumerable<ArticleModel>> GetAllForDropdown();
+        Task<IEnumerable<ArticleModel>> GetAllArticlesForDropdown();
         Task<PagedResponse<ArticleModel>> GetAllItemsPaginated(int pageNumber, int pageSize);
         Task<int> AddArticle(ArticleModel item);
         Task<int> UpdateArticle(ArticleModel item);

@@ -61,7 +61,7 @@ namespace OfferCreator.Persistance.Repositories
             return result;
         }
 
-        public async Task<IEnumerable<ArticleModel>> GetAllForDropdown()
+        public async Task<IEnumerable<ArticleModel>> GetAllArticlesForDropdown()
         {
             return await _context.Items.Select(x => new ArticleModel
             {

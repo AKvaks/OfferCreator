@@ -12,8 +12,8 @@
 <div class="page-title">
     <h1>Articles</h1>
     <button class="btn btn-primary" type="button" @onclick="AddArticle">
-        <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span>
-        Add Article
+        <i class="fa-solid fa-plus"></i>
+        Article
     </button>
 </div>
 <br />
@@ -90,7 +90,7 @@ else
 
     private string GetAllItemsPagedURL(int pageNumber)
     {
-        return "api/article?pageNumber=" + $"{pageNumber}" + $"&pageSize={pageSize}";
+        return "api/article/GetAllItemsPaginated?pageNumber=" + $"{pageNumber}" + $"&pageSize={pageSize}";
     }
 
     private void OnItemClick(int articleId)
@@ -105,7 +105,7 @@ else
 
     private async void DeleteArticle(int articleId)
     {
-        HttpResponseMessage response = await Http.DeleteAsync($"/api/article/{articleId}");
+        HttpResponseMessage response = await Http.DeleteAsync($"/api/article/DeleteArticleById/{articleId}");
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("Delete successful");

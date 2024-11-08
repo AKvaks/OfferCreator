@@ -1,0 +1,53 @@
+﻿@using Blazored.Modal
+@using OfferCreator.Core.Models.DTOs.OfferItems
+@using OfferCreator.Core.Models.DTOs.Articles
+@inject HttpClient Http
+
+<EditForm Model="OfferItem" OnValidSubmit="ValidSubmit">
+    <DataAnnotationsValidator />
+    <div>
+        <label>Articles:</label>
+        <InputSelect @bind-Value="OfferItem.ArticleId" class="form-control">
+            <option value="">Select article</option>
+            @foreach (var article in Articles)
+            {
+                <option value="@article.Id">@article.ArticleName</option>
+            }
+        </InputSelect>
+    </div>
+    <div>
+        <label>Price per Item:</label>
+        <InputNumber @bind-Value="OfferItem.PricePerItem" class="form-control" />
+        <ValidationMessage For="@(() => OfferItem.PricePerItem)" />
+    </div>
+    <div>
+        <label>Quantity:</label>
+        <InputNumber @bind-Value="OfferItem.Quantity" class="form-control" />
+        <ValidationMessage For="@(() => OfferItem.Quantity)" />
+    </div>
+    <button type="submit">Save</button>
+    <button type="button" @onclick="Cancel">Cancel</button>
+</EditForm>
+
+@code {
+    [Parameter] 
+    public OfferItemModel OfferItem { get; set; }
+    private IEnumerable<ArticleModel> Articles;
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Articles = await Http.GetFromJsonAsync<IEnumerable<ArticleModel>>("/api/article/GetAllArticlesForDropDown");
+    }
+
+    private void ValidSubmit()
+    {
+        BlazoredModal.CloseAsync(ModalResult.Ok(OfferItem));
+    }
+
+    private void Cancel()
+    {
+        BlazoredModal.CancelAsync();
+    }
+}

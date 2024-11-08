@@ -12,7 +12,7 @@
     </button>
 </div>
 <br />
-<EditForm Model="article" OnValidSubmit="HandleSubmit">
+<EditForm Model="article" OnValidSubmit="ValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
     <div class="mb-3">
@@ -34,7 +34,7 @@
     {
         if (Id != null)
         {
-            var response = await Http.GetFromJsonAsync<ArticleModel>(GetArticleUrl() + $"/{Id}");
+            var response = await Http.GetFromJsonAsync<ArticleModel>(GetArticleUrl() + "/GetArticleById" + $"/{Id}");
             if (response is not null)
             {
                 article = response;
@@ -56,11 +56,11 @@
         NavigationManager.NavigateTo("/articles");
     }
 
-    private async Task HandleSubmit()
+    private async Task ValidSubmit()
     {
         if (Id != null)
         {
-            HttpResponseMessage response = await Http.PutAsJsonAsync(GetArticleUrl(), article);
+            HttpResponseMessage response = await Http.PutAsJsonAsync(GetArticleUrl() + "/UpdateArticle", article);
             if (response.IsSuccessStatusCode)
             {
                 // Handle success
@@ -75,7 +75,7 @@
         }
         else
         {
-            HttpResponseMessage response = await Http.PostAsJsonAsync(GetArticleUrl(), article);
+            HttpResponseMessage response = await Http.PostAsJsonAsync(GetArticleUrl() + "/AddArticle", article);
             if (response.IsSuccessStatusCode)
             {
                 // Handle success

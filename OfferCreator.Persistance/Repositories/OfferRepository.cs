@@ -109,8 +109,7 @@ namespace OfferCreator.Persistance.Repositories
                 OfferNumber = offer.OfferNumber,
                 DateOfOffer = offer.UpdatedAt.ToShortDateString(),
                 OfferItems = offerItemsResult,
-                OfferItemsIdsToDelete = new List<int>(),
-                OfferItemsIdsToUpdate = new List<int>()
+                OfferItemsIdsToDelete = new List<int>()
             };
         }
 
@@ -160,8 +159,34 @@ namespace OfferCreator.Persistance.Repositories
 
             if (offer != null)
             {
-                offer.UpdatedAt = DateTime.UtcNow;
+                List<OfferItem> offerItemsToAdd = new List<OfferItem>();
+                foreach (var offerItem in offerToUpdate.OfferItems)
+                {
+                    var offerItemToUpdate = offer.OfferItems.FirstOrDefault(x => x.Id == offerItem.Id);
+                    if (offerItemToUpdate != null)
+                    {
+                        offerItemToUpdate.OfferId = offerItem.Id;
+                        offerItemToUpdate.ItemId = offerItem.ArticleId;
+                        offerItemToUpdate.PricePerItem = offerItem.PricePerItem;
+                        offerItemToUpdate.Quantity = offerItem.Quantity;
+                    }
+                    else
+                    {
+                        OfferItem offerToAdd = new OfferItem()
+                        {
+                            ItemId = offerItem.ArticleId,
+                            OfferId = offerItem.OfferId,
+                            PricePerItem = offerItem.PricePerItem,
+                            Quantity = offerItem.Quantity
+                        };
 
+                        offerItemsToAdd.Add(offerToAdd);
+                    }
+                }
+
+                if (offerItemsToAdd.Count > 0) await _context.OfferItems.AddRangeAsync(offerItemsToAdd);
+
+                offer.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();
                 return offer.Id;
             }

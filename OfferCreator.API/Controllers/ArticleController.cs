@@ -5,7 +5,7 @@ using OfferCreator.Core.Features.Articles.Queries;
 
 namespace OfferCreator.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class ArticleController : ControllerBase
     {
@@ -22,6 +22,13 @@ namespace OfferCreator.API.Controllers
         public async Task<IActionResult> GetAllItemsPaginated(int? pageNumber, int? pageSize)
         {
             var result = await _mediator.Send(new GetAllArticlesPaginatedQuery(pageNumber, pageSize));
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllArticlesForDropDown()
+        {
+            var result = await _mediator.Send(new GetAllArticlesForDropDownQurey());
             return Ok(result);
         }
 
@@ -44,7 +51,7 @@ namespace OfferCreator.API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateHotelById(UpdateArticleCommand command)
+        public async Task<IActionResult> UpdateArticle(UpdateArticleCommand command)
         {
             //var commandValidation = new EditHotelCommandValidator().Validate(command);
             //if (!commandValidation.IsValid) return BadRequest(commandValidation.Errors.Select(x => x.ErrorMessage));
@@ -55,7 +62,7 @@ namespace OfferCreator.API.Controllers
         }
 
         [HttpDelete("{Id}")]
-        public async Task<IActionResult> DeleteHotelById(int Id)
+        public async Task<IActionResult> DeleteArticleById(int Id)
         {
             var result = await _mediator.Send(new DeleteArticleCommand(Id));
             return Ok(result);

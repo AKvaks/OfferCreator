@@ -8,7 +8,6 @@ namespace OfferCreator.Core.Models.DTOs.Offers
         public int OfferNumber { get; set; }
         public string DateOfOffer { get; set; }
         public List<OfferItemModel>? OfferItems { get; set; }
-        public List<int>? OfferItemsIdsToUpdate { get; set; }
         public List<int>? OfferItemsIdsToDelete { get; set; }
     }
 }
