@@ -119,31 +119,38 @@ namespace OfferCreator.Persistance.Repositories
             Offer offer = new Offer()
             {
                 OfferNumber = offerNumber + 1,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow,
             };
+
             await _context.Offers.AddAsync(offer);
-
-            List<OfferItem> offerItemsToAdd = new List<OfferItem>();
-            foreach (var offerItem in offerToAdd.OfferItems)
-            {
-                OfferItem item = new OfferItem()
-                {
-                    OfferId = offer.Id,
-                    ItemId = offerItem.ArticleId,
-                    PricePerItem = offerItem.PricePerItem,
-                    Quantity = offerItem.Quantity
-                };
-                offerItemsToAdd.Add(item);
-            }
-
-            await _context.OfferItems.AddRangeAsync(offerItemsToAdd);
             await _context.SaveChangesAsync();
+
+            if (offerToAdd.OfferItems != null)
+            {
+                List<OfferItem> offerItemsToAdd = new List<OfferItem>();
+                foreach (var offerItem in offerToAdd.OfferItems)
+                {
+                    OfferItem item = new OfferItem()
+                    {
+                        OfferId = offer.Id,
+                        ItemId = offerItem.ArticleId,
+                        PricePerItem = offerItem.PricePerItem,
+                        Quantity = offerItem.Quantity
+                    };
+                    offerItemsToAdd.Add(item);
+                }
+
+                await _context.OfferItems.AddRangeAsync(offerItemsToAdd);
+                await _context.SaveChangesAsync();
+            }
 
             return offer.Id;
         }
 
         public async Task<int> UpdatOffer(OfferAddEditModel offerToUpdate)
         {
-            if (offerToUpdate.OfferItemsIdsToDelete.Any())
+            if (offerToUpdate.OfferItemsIdsToDelete != null && offerToUpdate.OfferItemsIdsToDelete.Any())
             {
                 var offerItemsToDelete = await _context.OfferItems
                 .Where(x => offerToUpdate.OfferItemsIdsToDelete.Contains(x.Id))
@@ -159,32 +166,34 @@ namespace OfferCreator.Persistance.Repositories
 
             if (offer != null)
             {
-                List<OfferItem> offerItemsToAdd = new List<OfferItem>();
-                foreach (var offerItem in offerToUpdate.OfferItems)
+                if (offerToUpdate.OfferItems != null && offerToUpdate.OfferItems.Any())
                 {
-                    var offerItemToUpdate = offer.OfferItems.FirstOrDefault(x => x.Id == offerItem.Id);
-                    if (offerItemToUpdate != null)
+                    List<OfferItem> offerItemsToAdd = new List<OfferItem>();
+                    foreach (var offerItem in offerToUpdate.OfferItems)
                     {
-                        offerItemToUpdate.OfferId = offerItem.Id;
-                        offerItemToUpdate.ItemId = offerItem.ArticleId;
-                        offerItemToUpdate.PricePerItem = offerItem.PricePerItem;
-                        offerItemToUpdate.Quantity = offerItem.Quantity;
-                    }
-                    else
-                    {
-                        OfferItem offerToAdd = new OfferItem()
+                        var offerItemToUpdate = offer.OfferItems?.FirstOrDefault(x => x.Id == offerItem.Id);
+                        if (offerItemToUpdate != null)
                         {
-                            ItemId = offerItem.ArticleId,
-                            OfferId = offerItem.OfferId,
-                            PricePerItem = offerItem.PricePerItem,
-                            Quantity = offerItem.Quantity
-                        };
+                            offerItemToUpdate.ItemId = offerItem.ArticleId;
+                            offerItemToUpdate.PricePerItem = offerItem.PricePerItem;
+                            offerItemToUpdate.Quantity = offerItem.Quantity;
+                        }
+                        else
+                        {
+                            OfferItem offerToAdd = new OfferItem()
+                            {
+                                ItemId = offerItem.ArticleId,
+                                OfferId = offerItem.OfferId,
+                                PricePerItem = offerItem.PricePerItem,
+                                Quantity = offerItem.Quantity
+                            };
 
-                        offerItemsToAdd.Add(offerToAdd);
+                            offerItemsToAdd.Add(offerToAdd);
+                        }
                     }
-                }
 
-                if (offerItemsToAdd.Count > 0) await _context.OfferItems.AddRangeAsync(offerItemsToAdd);
+                    if (offerItemsToAdd.Count > 0) await _context.OfferItems.AddRangeAsync(offerItemsToAdd);
+                }
 
                 offer.UpdatedAt = DateTime.UtcNow;
                 await _context.SaveChangesAsync();

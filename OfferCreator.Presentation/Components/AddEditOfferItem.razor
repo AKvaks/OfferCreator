@@ -5,40 +5,46 @@
 
 <EditForm Model="OfferItem" OnValidSubmit="ValidSubmit">
     <DataAnnotationsValidator />
-    <div>
+    <div class="form-row">
         <label>Articles:</label>
         <InputSelect @bind-Value="OfferItem.ArticleId" class="form-control">
-            <option value="">Select article</option>
+            <option value="">--- Select article --- </option>
             @foreach (var article in Articles)
             {
                 <option value="@article.Id">@article.ArticleName</option>
             }
         </InputSelect>
+        <ValidationMessage For="@(() => OfferItem.ArticleId)" />
     </div>
-    <div>
-        <label>Price per Item:</label>
-        <InputNumber @bind-Value="OfferItem.PricePerItem" class="form-control" />
-        <ValidationMessage For="@(() => OfferItem.PricePerItem)" />
+    <div class="form-row">
+        <div class="form-group">
+            <label>Price per Item:</label>
+            <InputNumber @bind-Value="OfferItem.PricePerItem" class="form-control" />
+            <ValidationMessage For="@(() => OfferItem.PricePerItem)" />
+        </div>
+        <div class="form-group">
+            <label>Quantity:</label>
+            <InputNumber @bind-Value="OfferItem.Quantity" class="form-control" />
+            <ValidationMessage For="@(() => OfferItem.Quantity)" />
+        </div>
     </div>
-    <div>
-        <label>Quantity:</label>
-        <InputNumber @bind-Value="OfferItem.Quantity" class="form-control" />
-        <ValidationMessage For="@(() => OfferItem.Quantity)" />
+    <div class="table-buttons">
+        <button class="btn btn-success" type="submit">Add</button>
+        <button class="btn btn-danger" type="button" @onclick="Cancel">Cancel</button>
     </div>
-    <button type="submit">Save</button>
-    <button type="button" @onclick="Cancel">Cancel</button>
 </EditForm>
 
 @code {
     [Parameter] 
-    public OfferItemModel OfferItem { get; set; }
-    private IEnumerable<ArticleModel> Articles;
+    public required OfferItemModel OfferItem { get; set; }
+
+    private IEnumerable<ArticleModel> Articles = new List<ArticleModel>();
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        Articles = await Http.GetFromJsonAsync<IEnumerable<ArticleModel>>("/api/article/GetAllArticlesForDropDown");
+        Articles = await Http.GetFromJsonAsync<IEnumerable<ArticleModel>>("/api/article/GetAllArticlesForDropDown") ?? new List<ArticleModel>();
     }
 
     private void ValidSubmit()

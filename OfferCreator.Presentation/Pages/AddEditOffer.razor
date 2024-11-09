@@ -7,70 +7,76 @@
 
 <PageTitle>@(Id != null ? "Edit Offer" : "Add Offer")</PageTitle>
 
-<div class="page-title">
-    <h1>@(Id != null ? "Edit Offer" : "Add Offer")</h1>
-    <button class="btn btn-primary" type="button" @onclick="BackToOffers">
-        Back
-    </button>
-</div>
-<br />
-<div>
-    <label>Offer No.: </label>
-    <span>@(Id != null ? offer.OfferNumber : "N/A")</span>
-</div>
-<div>
-    <label>Date of offer: </label>
-    <span>@(Id != null ? offer.DateOfOffer : DateTime.UtcNow.ToShortDateString())</span>
-</div>
-<hr />
-<div class="page-title">
-    <h2>Offer Items:</h2>
-    <button class="btn btn-success" type="button" @onclick="AddOfferItem">
-        <i class="fa-solid fa-plus"></i> Offer
-    </button>
-</div>
-@if (offer.OfferItems is not null)
-{
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Article</th>
-                    <th>Price per Item</th>
-                    <th>Quantity</th>
-                    <th>Total Price</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var offerItem in offer.OfferItems)
-                {
-                    <tr>
-                        <td>@offerItem.ArticleName</td>
-                        <td>@offerItem.PricePerItem</td>
-                        <td>@offerItem.Quantity</td>
-                        <td>@offerItem.TotalPrice</td>
-                        <td>
-                            <button class="btn btn-success" type="button" @onclick="() => EditOfferItem(offerItem)">
-                                <i class="fa-solid fa-gear"></i>
-                            </button>
-                            <button class="btn btn-danger" type="button" @onclick="() => DeleteOfferItem(offerItem)">
-                                <i class="fa-solid fa-trash" />
-                            </button>
-                        </td>
-                    </tr>
-                }
-                <tr>
-                    <td></td>
-                    <td></td>
-                    <td>SUM:</td>
-                    <td>@offer.OfferItems.Sum(x => x.TotalPrice)</td>
-                    <td></td>
-                </tr>
-            </tbody>
-        </table>
+<EditForm Model="offer" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="page-title">
+        <h1>@(Id != null ? "Edit Offer" : "Add Offer")</h1>
+        <button class="btn btn-primary" type="button" @onclick="BackToOffers">
+            Back
+        </button>
     </div>
-}
+    <br />
+    <div>
+        <label>Offer No.: </label>
+        <span>@(Id != null ? offer.OfferNumber : "N/A")</span>
+    </div>
+    <div>
+        <label>Date of offer: </label>
+        <span>@(Id != null ? offer.DateOfOffer : DateTime.UtcNow.ToShortDateString())</span>
+    </div>
+    <hr />
+    <div class="page-title">
+        <h2>Offer Items:</h2>
+        <button class="btn btn-success" type="button" @onclick="AddOfferItem">
+            <i class="fa-solid fa-plus"></i> Offer
+        </button>
+    </div>
+    @if (offer.OfferItems is not null)
+    {
+        <div class="table-responsive">
+            <table class="table table-striped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Article</th>
+                        <th>Price per Item</th>
+                        <th>Quantity</th>
+                        <th>Total Price</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var offerItem in offer.OfferItems)
+                    {
+                        <tr>
+                            <td>@offerItem.ArticleName</td>
+                            <td>@offerItem.PricePerItem</td>
+                            <td>@offerItem.Quantity</td>
+                            <td>@offerItem.TotalPrice</td>
+                            <td>
+                                <button class="btn btn-success" type="button" @onclick="() => EditOfferItem(offerItem)">
+                                    <i class="fa-solid fa-gear"></i>
+                                </button>
+                                <button class="btn btn-danger" type="button" @onclick="() => DeleteOfferItem(offerItem)">
+                                    <i class="fa-solid fa-trash" />
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td></td>
+                        <td></td>
+                        <td>SUM:</td>
+                        <td>@offer.OfferItems.Sum(x => x.TotalPrice)</td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    }
+    <div class="table-buttons">
+        <button class="btn btn-primary" type="submit">@btnText</button>
+    </div>
+</EditForm>
 
 @code {
     [Parameter]
@@ -79,7 +85,7 @@
 
     public OfferAddEditModel offer = new OfferAddEditModel();
 
-    [CascadingParameter] public IModalService Modal { get; set; }
+    [CascadingParameter] public IModalService Modal { get; set; } = default!;
 
     protected override async Task OnParametersSetAsync()
     {
@@ -102,35 +108,40 @@
         }
     }
 
-    private async void AddOfferItem()
+    private async Task AddOfferItem()
     {
         var parameters = new ModalParameters();
-        parameters.Add("Offer Item", new OfferItemModel());
+        parameters.Add("OfferItem", new OfferItemModel());
 
         var modal = Modal.Show<AddEditOfferItem>("Add Offer Item", parameters);
         var result = await modal.Result;
 
-        if (!result.Cancelled)
+        if (!result.Cancelled && result.Data is OfferItemModel newOfferItem)
         {
-            var newOfferItem = (OfferItemModel)result.Data;
-            offer.OfferItems?.Add(newOfferItem);
+            if (offer.OfferItems == null) offer.OfferItems = new List<OfferItemModel>();
+            offer.OfferItems.Add(newOfferItem);
             StateHasChanged();
         }
     }
 
-    private async void EditOfferItem(OfferItemModel OfferItem)
+    private async Task EditOfferItem(OfferItemModel OfferItem)
     {
         var parameters = new ModalParameters();
-        parameters.Add("Offer Item", OfferItem);
+        parameters.Add("OfferItem", OfferItem);
 
-        var modal = Modal.Show<AddEditOfferItem>("Add Offer Item", parameters);
+        var modal = Modal.Show<AddEditOfferItem>("Edit Offer Item", parameters);
         var result = await modal.Result;
 
-        if (!result.Cancelled)
+        if (!result.Cancelled && result.Data is OfferItemModel updatedOfferItem)
         {
-            var newOfferItem = (OfferItemModel)result.Data;
-            offer.OfferItems?.Add(newOfferItem);
-            StateHasChanged();
+            var offerItemToUpdate = offer.OfferItems?.FirstOrDefault(x => x.Id == updatedOfferItem.Id);
+            if (offerItemToUpdate != null)
+            {
+                offerItemToUpdate.ArticleId = updatedOfferItem.ArticleId;
+                offerItemToUpdate.Quantity = updatedOfferItem.Quantity;
+                offerItemToUpdate.PricePerItem = updatedOfferItem.PricePerItem;
+                StateHasChanged();
+            }
         }
     }
 
@@ -139,7 +150,8 @@
         var removeAtIndex = offer.OfferItems?.IndexOf(offerItemToDelete);
         if (removeAtIndex != null && removeAtIndex != -1)
         {
-            offer.OfferItemsIdsToDelete?.Add(offerItemToDelete.Id);
+            if (offer.OfferItemsIdsToDelete == null) offer.OfferItemsIdsToDelete = new List<int>();
+            offer.OfferItemsIdsToDelete.Add(offerItemToDelete.Id);
             offer.OfferItems?.RemoveAt(removeAtIndex.Value);
             StateHasChanged();
         }
@@ -153,5 +165,19 @@
     private string GetOfferForEditUrl()
     {
         return $"api/offer/GetOfferForEditById/{Id}";
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        if (Id != null)
+        {
+            await Http.PutAsJsonAsync($"/api/offer/UpdateOffer", offer);
+        }
+        else
+        {
+            await Http.PostAsJsonAsync("/api/offer/AddOffer", offer);
+        }
+
+        NavigationManager.NavigateTo("/");
     }
 }

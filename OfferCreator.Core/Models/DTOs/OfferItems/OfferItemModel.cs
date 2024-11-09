@@ -7,7 +7,7 @@ namespace OfferCreator.Core.Models.DTOs.OfferItems
         public int Id { get; set; }
         [Required]
         public int ArticleId { get; set; }
-        public string ArticleName { get; set; }
+        public string? ArticleName { get; set; }
         public int OfferId { get; set; }
         [Required]
         [Range(0, double.MaxValue, ErrorMessage = "Price per item must be greater than or equal to 0")]

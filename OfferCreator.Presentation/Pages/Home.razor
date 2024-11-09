@@ -106,6 +106,7 @@ else
         if (response.IsSuccessStatusCode)
         {
             Console.WriteLine("Delete successful");
+            pageNumber = 1;
             pagedOffers = await Http.GetFromJsonAsync<PagedResponse<OfferListModel>>(GetAllOffersPagedURL(pageNumber));
             StateHasChanged();
         }
