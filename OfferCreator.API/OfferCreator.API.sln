@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfferCreator.Presentation",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OfferCreator.Persistance", "..\OfferCreator.Persistance\OfferCreator.Persistance.csproj", "{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OfficeCreator.Tests", "..\OfficeCreator.Tests\OfficeCreator.Tests.csproj", "{FD1B7CCD-B7F2-4448-921C-E57143191DDF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6E50DCA4-96F2-4B13-9ED5-15B759C65B83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FD1B7CCD-B7F2-4448-921C-E57143191DDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FD1B7CCD-B7F2-4448-921C-E57143191DDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FD1B7CCD-B7F2-4448-921C-E57143191DDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FD1B7CCD-B7F2-4448-921C-E57143191DDF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
