@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using OfferCreator.Core.Configuration;
 using OfferCreator.Core.Entities;
@@ -64,6 +65,32 @@ using (var scope = app.Services.CreateScope())
         throw;
     }
 }
+
+//Implements global error handling middleware
+app.UseExceptionHandler(appError =>
+{
+    appError.Run(async errorContext =>
+    {
+        errorContext.Response.StatusCode = 500;
+        errorContext.Response.ContentType = "application/json";
+
+        var errorContextFeature = errorContext.Features.Get<IExceptionHandlerFeature>();
+
+        //If there are unhandled exceptions, we log them and user gets a minimal, user friendly message
+        //that does not reveal too much information
+        if (errorContextFeature != null)
+        {
+            var logger = errorContext.RequestServices.GetRequiredService<ILogger<Program>>();
+            logger.LogError(errorContextFeature.Error, "An unhandled exception has occurred.");
+
+            await errorContext.Response.WriteAsJsonAsync(new
+            {
+                StatusCore = errorContext.Response.StatusCode,
+                Message = "Internal Server Error"
+            });
+        }
+    });
+});
 
 app.Run();
 
