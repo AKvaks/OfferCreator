@@ -4,7 +4,7 @@ using OfferCreator.Core.Models.DTOs.Articles;
 
 namespace OfferCreator.Core.Features.Articles.Commands
 {
-    public record UpdateArticleCommand(int Id, string ArticleName) : IRequest<int>;
+    public class UpdateArticleCommand : ArticleModel, IRequest<int>;
 
     public class UpdateArticleCommandHandler : IRequestHandler<UpdateArticleCommand, int>
     {
@@ -16,7 +16,7 @@ namespace OfferCreator.Core.Features.Articles.Commands
 
         public async Task<int> Handle(UpdateArticleCommand command, CancellationToken cancellationToken)
         {
-            return await _articleRepository.UpdateArticle(new ArticleModel() { Id = command.Id, ArticleName = command.ArticleName });
+            return await _articleRepository.UpdateArticle(command);
         }
     }
 }

@@ -21,14 +21,24 @@ namespace OfferCreator.API.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetOfferDetailsById(int Id)
         {
+            if (Id <= 0)
+                return BadRequest("Id must be greater than zero.");
+
             var result = await _mediator.Send(new GetOfferByIdQuery(Id));
+
+            if (result.Id == -1) return NotFound();
             return Ok(result);
         }
 
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetOfferForEditById(int Id)
         {
+            if (Id <= 0)
+                return BadRequest("Id must be greater than zero.");
+
             var result = await _mediator.Send(new GetOfferByIdQuery(Id));
+
+            if (result.Id == -1) return NotFound();
             return Ok(result);
         }
 
@@ -42,29 +52,38 @@ namespace OfferCreator.API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddOffer(AddOfferCommand command)
         {
-            //var commandValidation = new AddHotelCommandValidator().Validate(command);
-            //if (!commandValidation.IsValid) return BadRequest(commandValidation.Errors.Select(x => x.ErrorMessage));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var result = await _mediator.Send(command);
             return Ok(result);
-            //return StatusCode(result.StatusCode, result.Message);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateOffer(UpdateOfferCommand command)
         {
-            //var commandValidation = new EditHotelCommandValidator().Validate(command);
-            //if (!commandValidation.IsValid) return BadRequest(commandValidation.Errors.Select(x => x.ErrorMessage));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var result = await _mediator.Send(command);
+
+            if (result == -1) return NotFound();
             return Ok(result);
-            //return StatusCode(result.StatusCode, result.Message);
         }
 
         [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteOfferById(int Id)
         {
+            if (Id <= 0)
+                return BadRequest("Id must be greater than zero.");
+
             var result = await _mediator.Send(new DeleteOfferCommand(Id));
+
+            if (result == -1) return NotFound();
             return Ok(result);
         }
     }

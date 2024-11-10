@@ -7,8 +7,8 @@
     <DataAnnotationsValidator />
     <div class="form-group">
         <label>Articles:</label>
-        <InputSelect @bind-Value="OfferItem.ArticleId" class="form-control">
-            <option value="">--- Select article --- </option>
+        <InputSelect @bind-Value="SelectedArticleId" class="form-control">
+            <option value="0">--- Select article ---</option>
             @foreach (var article in Articles)
             {
                 <option value="@article.Id">@article.ArticleName</option>
@@ -41,6 +41,23 @@
     private IEnumerable<ArticleModel> Articles = new List<ArticleModel>();
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; } = default!;
+
+    public int? SelectedArticleId
+    {
+        get => OfferItem.ArticleId;
+        set
+        {
+            if (value.HasValue)
+            {
+                if (OfferItem.ArticleId != value.Value)
+                {
+                    OfferItem.ArticleId = value.Value;
+                    OfferItem.ArticleName = Articles.FirstOrDefault(a => a.Id == value.Value)?.ArticleName;
+
+                }
+            }
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {

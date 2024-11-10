@@ -56,27 +56,41 @@ namespace OfferCreator.Persistance.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            List<OfferItemModel> offerItemsResult = new List<OfferItemModel>();
-            foreach (var offerItem in offer.OfferItems)
+            if (offer != null)
             {
-                OfferItemModel item = new OfferItemModel
+                List<OfferItemModel> offerItemsResult = new List<OfferItemModel>();
+                if (offer.OfferItems != null && offer.OfferItems.Any())
                 {
-                    Id = offerItem.Id,
-                    ArticleId = offerItem.ItemId,
-                    ArticleName = offerItem.Item.ItemName,
-                    OfferId = offer.Id,
-                    PricePerItem = offerItem.PricePerItem,
-                    Quantity = offerItem.Quantity
+                    foreach (var offerItem in offer.OfferItems)
+                    {
+                        OfferItemModel item = new OfferItemModel
+                        {
+                            Id = offerItem.Id,
+                            ArticleId = offerItem.ItemId,
+                            ArticleName = offerItem.Item.ItemName,
+                            OfferId = offer.Id,
+                            PricePerItem = offerItem.PricePerItem,
+                            Quantity = offerItem.Quantity
+                        };
+                        offerItemsResult.Add(item);
+                    }
+                }
+
+                return new OfferModel
+                {
+                    Id = offer.Id,
+                    OfferNumber = offer.OfferNumber,
+                    DateOfOffer = offer.UpdatedAt.ToShortDateString(),
+                    OfferItems = offerItemsResult
                 };
-                offerItemsResult.Add(item);
             }
 
             return new OfferModel
             {
-                Id = offer.Id,
-                OfferNumber = offer.OfferNumber,
-                DateOfOffer = offer.UpdatedAt.ToShortDateString(),
-                OfferItems = offerItemsResult
+                Id = -1,
+                OfferNumber = -1,
+                DateOfOffer = DateTime.UtcNow.ToShortDateString(),
+                OfferItems = null
             };
         }
 
@@ -88,28 +102,43 @@ namespace OfferCreator.Persistance.Repositories
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            List<OfferItemModel> offerItemsResult = new List<OfferItemModel>();
-            foreach (var offerItem in offer.OfferItems)
+            if (offer != null)
             {
-                OfferItemModel item = new OfferItemModel
+                List<OfferItemModel> offerItemsResult = new List<OfferItemModel>();
+                if (offer.OfferItems != null && offer.OfferItems.Any())
                 {
-                    Id = offerItem.Id,
-                    ArticleId = offerItem.ItemId,
-                    ArticleName = offerItem.Item.ItemName,
-                    OfferId = offer.Id,
-                    PricePerItem = offerItem.PricePerItem,
-                    Quantity = offerItem.Quantity
+                    foreach (var offerItem in offer.OfferItems)
+                    {
+                        OfferItemModel item = new OfferItemModel
+                        {
+                            Id = offerItem.Id,
+                            ArticleId = offerItem.ItemId,
+                            ArticleName = offerItem.Item.ItemName,
+                            OfferId = offer.Id,
+                            PricePerItem = offerItem.PricePerItem,
+                            Quantity = offerItem.Quantity
+                        };
+                        offerItemsResult.Add(item);
+                    }
+                }
+
+                return new OfferAddEditModel
+                {
+                    Id = offer.Id,
+                    OfferNumber = offer.OfferNumber,
+                    DateOfOffer = offer.UpdatedAt.ToShortDateString(),
+                    OfferItems = offerItemsResult,
+                    OfferItemsIdsToDelete = new List<int>()
                 };
-                offerItemsResult.Add(item);
             }
 
             return new OfferAddEditModel
             {
-                Id = offer.Id,
-                OfferNumber = offer.OfferNumber,
-                DateOfOffer = offer.UpdatedAt.ToShortDateString(),
-                OfferItems = offerItemsResult,
-                OfferItemsIdsToDelete = new List<int>()
+                Id = -1,
+                OfferNumber = -1,
+                DateOfOffer = DateTime.UtcNow.ToShortDateString(),
+                OfferItems = null,
+                OfferItemsIdsToDelete = null
             };
         }
 
@@ -183,7 +212,7 @@ namespace OfferCreator.Persistance.Repositories
                             OfferItem offerToAdd = new OfferItem()
                             {
                                 ItemId = offerItem.ArticleId,
-                                OfferId = offerItem.OfferId,
+                                OfferId = offer.Id,
                                 PricePerItem = offerItem.PricePerItem,
                                 Quantity = offerItem.Quantity
                             };

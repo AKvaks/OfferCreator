@@ -35,36 +35,50 @@ namespace OfferCreator.API.Controllers
         [HttpGet("{Id}")]
         public async Task<IActionResult> GetArticleById(int Id)
         {
+            if (Id <= 0)
+                return BadRequest("Id must be greater than zero.");
+
             var result = await _mediator.Send(new GetArticleByIdQuery(Id));
+
+            if (result.Id == -1) return NotFound();
             return Ok(result);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddArticle(AddArticleCommand command)
         {
-            //var commandValidation = new AddHotelCommandValidator().Validate(command);
-            //if (!commandValidation.IsValid) return BadRequest(commandValidation.Errors.Select(x => x.ErrorMessage));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var result = await _mediator.Send(command);
             return Ok(result);
-            //return StatusCode(result.StatusCode, result.Message);
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateArticle(UpdateArticleCommand command)
         {
-            //var commandValidation = new EditHotelCommandValidator().Validate(command);
-            //if (!commandValidation.IsValid) return BadRequest(commandValidation.Errors.Select(x => x.ErrorMessage));
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
             var result = await _mediator.Send(command);
+
+            if (result == -1) return NotFound();
             return Ok(result);
-            //return StatusCode(result.StatusCode, result.Message);
         }
 
         [HttpDelete("{Id}")]
         public async Task<IActionResult> DeleteArticleById(int Id)
         {
+            if (Id <= 0)
+                return BadRequest("Id must be greater than zero.");
+
             var result = await _mediator.Send(new DeleteArticleCommand(Id));
+
+            if (result == -1) return NotFound();
             return Ok(result);
         }
     }

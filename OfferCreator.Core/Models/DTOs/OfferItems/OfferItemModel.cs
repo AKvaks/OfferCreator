@@ -6,6 +6,7 @@ namespace OfferCreator.Core.Models.DTOs.OfferItems
     {
         public int Id { get; set; }
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Article is required")]
         public int ArticleId { get; set; }
         public string? ArticleName { get; set; }
         public int OfferId { get; set; }

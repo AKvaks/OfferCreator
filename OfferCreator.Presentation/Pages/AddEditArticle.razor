@@ -63,13 +63,11 @@
             HttpResponseMessage response = await Http.PutAsJsonAsync(GetArticleUrl() + "/UpdateArticle", article);
             if (response.IsSuccessStatusCode)
             {
-                // Handle success
                 var result = await response.Content.ReadFromJsonAsync<int>();
                 NavigationManager.NavigateTo("/articles");
             }
             else
             {
-                // Handle failure
                 Console.WriteLine("Failed to post data.");
             }
         }
@@ -78,13 +76,11 @@
             HttpResponseMessage response = await Http.PostAsJsonAsync(GetArticleUrl() + "/AddArticle", article);
             if (response.IsSuccessStatusCode)
             {
-                // Handle success
                 var result = await response.Content.ReadFromJsonAsync<int>();
                 NavigationManager.NavigateTo("/articles");
             }
             else
             {
-                // Handle failure
                 Console.WriteLine("Failed to post data.");
             }
         }
