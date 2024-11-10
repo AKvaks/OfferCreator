@@ -1,13 +1,20 @@
 # Offer Creator
 
-This is a Blazor WebAssembly .NET Core 8 hosted app designed as part of a technical interview.
+This Blazor WebAssembly .NET Core 8 hosted app was developed for a technical interview, emphasizing simplicity and maintainability following the KISS principle.
+It uses Entity Framework with a Code-First approach, along with the Repository pattern, MediatR, and CQRS.
+
+## Assignment
+
+Develop a web application for creating, editing, and viewing offers, with CRUD operations in a .NET 6+ REST API for BE, .NET 6+ Blazor for FE, and data stored in MS SQL Server.
+The offer entry page should display auto-generated offer numbers and dates, and allow item management (add, edit, delete) within a grid or pop-up modal, showing columns for item, unit price, quantity,
+and total price. Client-side and server-side validation are required, and a paginated view should display offer summaries with an edit option.
 
 ## Before running the application
 
 > [!NOTE]
 > Make sure that you have SQL Server 2022 Express installed and that connection string is set correctly
 
-There are seed methods in Program.cs that can be used to populate database with mock data. A call to these methods are commented out from line 49 to 51.
+There are seed methods in Program.cs that can be used to populate database with mock data. A call to these methods are commented out from line 56 to 58.
 
 ## Migrations
 
