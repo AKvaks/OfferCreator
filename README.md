@@ -14,7 +14,7 @@ and total price. Client-side and server-side validation are required, and a pagi
 > [!NOTE]
 > Make sure that you have SQL Server 2022 Express installed and that connection string is set correctly
 
-There are seed methods in Program.cs that can be used to populate database with mock data. A call to these methods are commented out from line 56 to 58.
+There are seed methods in Program.cs that will populate database with mock data. A call to these methods can be found from line 56 to 58.
 
 ## Migrations
 
